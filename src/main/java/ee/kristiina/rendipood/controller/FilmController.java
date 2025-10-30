@@ -28,6 +28,10 @@ public class FilmController {
 
     // Change the type of film
     @PutMapping("Film")
+    public List<Film> updateFilm(@RequestBody Film film){
+        filmRepository.save(film);
+        return filmRepository.findAll();
+    }
     public List<Film> changeTypeOfFilm(@RequestBody Film film){
         filmRepository.findFilmById(film.getId());
         return filmRepository.findAll();
@@ -35,7 +39,7 @@ public class FilmController {
 
     // list all films
     @GetMapping("Film")
-    public List<Film> findAll() {
+    public List<Film> getFilm(){
         return filmRepository.findAll();
     }
 
@@ -43,4 +47,6 @@ public class FilmController {
     public Film findFilmByInStore(boolean inStore){
         return filmRepository.findFilmByInStore(inStore);
     }
+
+
 }
