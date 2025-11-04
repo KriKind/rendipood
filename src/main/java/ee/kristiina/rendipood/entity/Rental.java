@@ -1,29 +1,28 @@
 package ee.kristiina.rendipood.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.web.WebProperties;
+
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-
-public class Film {
+public class Rental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
-    private FilmType type;
-    private int days;
+    private double initialFee;
+    private double lateFee;
 
-    @ManyToOne()
-    @JsonBackReference
-    private Rental rental;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Film> films;
+
 }
