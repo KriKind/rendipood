@@ -21,8 +21,7 @@ public class Rental {
     private double initialFee;
     private double lateFee;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JsonManagedReference
     private List<Film> films;
-
 }

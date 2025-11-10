@@ -5,6 +5,7 @@ import ee.kristiina.rendipood.entity.Rental;
 import ee.kristiina.rendipood.model.RentalFilm;
 import ee.kristiina.rendipood.repository.FilmRepository;
 import ee.kristiina.rendipood.repository.RentalRepository;
+import ee.kristiina.rendipood.service.RentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class RentalController {
     private RentalRepository rentalRepository;
 
     @Autowired
-    private FilmRepository filmRepository;
+    private RentalService rentalService;
 
     @GetMapping("rentals")
     public List<Rental> findAll() {
@@ -34,24 +35,26 @@ public class RentalController {
         //Rental dbRental = rentalRepository.save(rental); siin on Rentali id
 
         List<Film> films = new ArrayList<>();
-        for (RentalFilm rentalFilm : rentalFilms) {
-            if (rentalFilm.getRentedDays() <= 0 ){
-                throw new RuntimeException("Rental days must be greater than 0");
-            }
-            Film film = filmRepository.findById(rentalFilm.getFilmId()).orElseThrow();
-            if (film.getDays() > 0 ){
-                throw new RuntimeException("Film already rented");
-            }
-            // film.setRental(dbRental)
-            film.setDays(rentalFilm.getRentedDays());
-            film.setRental(rental);
-            films.add(film);
-        }
 
+        double sum = rentalService.getSumAndAddRental(rentalFilms, rental, films);
+        rental.setInitialFee(sum);
         rental.setFilms(films);
-        double sum = 0;
-        //TODO: tsükli sees suurendame summat
+
         rental.setInitialFee(sum);
         return rentalRepository.save(rental);
     }
+
+    @PostMapping("end-rental")
+    public Rental endRental(@RequestBody List<RentalFilm> rentalFilms) {
+
+//        List<Film> films = rentalService.getAllFilmsFromDB(rentalFilms);
+//
+//        Rental rental = rentalService.checkIfAllFilmsFromSameRental(films);
+
+        Rental rental = rentalService.calculateLateFee(rentalFilms);
+
+        return rentalRepository.save(rental);
+    }
+
+
 }

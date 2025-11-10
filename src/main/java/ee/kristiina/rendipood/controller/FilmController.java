@@ -27,6 +27,13 @@ public class FilmController {
         return filmRepository.findAll();
     }
 
+    // add films
+    @PostMapping("add-all-films")
+    public List<Film> addAllFilms(@RequestBody List<Film> films){
+        filmRepository.saveAll(films);
+        return filmRepository.findAll();
+    }
+
     // variant 1
     //localhost:8080/films
     @DeleteMapping("films")
@@ -80,10 +87,11 @@ public class FilmController {
 //    public Film findFilmByInStore(boolean inStore){
 //        return filmRepository.findFilmByInStore(inStore);
 //    }
-// list all films
-@GetMapping("available-films")
-public List<Film> availableFilms(){
-    return filmRepository.findByDays(0);
-}
+
+    // list all films
+    @GetMapping("available-films")
+    public List<Film> availableFilms(){
+        return filmRepository.findByDays(0);
+    }
 
 }
